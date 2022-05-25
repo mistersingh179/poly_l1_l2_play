@@ -44,7 +44,7 @@ const init = async () => {
   const txHash = process.argv[2];
   const intervalHandler = setInterval(async () => {
     try {
-      // https://apis.matic.network/api/v1/mumbai/block-included/26456151
+      // https://apis.matic.network/api/v1/mumbai/block-included/26461771
       const isCheckPointed = await posClient.isCheckPointed(txHash);
       console.log("isCheckPointed: ", isCheckPointed);
       if (isCheckPointed === true) {
@@ -72,7 +72,7 @@ const init = async () => {
             const r1 = await YourContract.receiveMessage(proof);
             console.log(r1);
           } catch (e) {
-            console.log("error calling receiveMessage on ChildContract");
+            console.log("error calling receiveMessage on ChildContract", e);
           }
         } catch (e) {
           console.log("error building payload: ", e);
