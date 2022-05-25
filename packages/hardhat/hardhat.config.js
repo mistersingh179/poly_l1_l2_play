@@ -8,7 +8,7 @@ require("@tenderly/hardhat-tenderly");
 
 require("hardhat-deploy");
 require("hardhat-gas-reporter");
-require("hardhat-abi-exporter");
+// require("hardhat-abi-exporter");
 
 require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
@@ -67,11 +67,9 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
-      /*      
-        notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
-        (you can put in a mnemonic here to set the deployer locally)
-      
-      */
+      accounts: {
+        mnemonic: mnemonic(),
+      },
     },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
@@ -88,7 +86,7 @@ module.exports = {
       },
     },
     mainnet: {
-      url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+      url: `https://mainnet.infura.io/v3/${process.env.EXAMPLE_INFURA_KEY}`, // <---- YOUR INFURA ID! (or it won't work)
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: mainnetGwei * 1000000000,
       accounts: {
@@ -103,7 +101,7 @@ module.exports = {
       },
     },
     goerli: {
-      url: "https://goerli.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+      url: `https://goerli.infura.io/v3/${process.env.EXAMPLE_INFURA_KEY}`, // <---- YOUR INFURA ID! (or it won't work)
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/goerli", // <---- YOUR MORALIS ID! (not limited to infura)
       accounts: {
         mnemonic: mnemonic(),
@@ -131,17 +129,21 @@ module.exports = {
       },
     },
     polygon: {
-      url: "https://polygon-rpc.com",
-      // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
-      gasPrice: 3200000000,
+      // url: "https://polygon-rpc.com",
+      // <---- YOUR MORALIS ID! (not limited to infura)
+      // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXX/polygon/mainnet",
+      url: `https://polygon-mainnet.infura.io/v3/${process.env.RINKEBY_INFURA_KEY}`,
+      gasPrice: 40000000000, // 40 gwei
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com",
-      // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
-      gasPrice: 3200000000,
+      // url: "https://rpc-mumbai.maticvigil.com",
+      // <---- YOUR MORALIS ID! (not limited to infura)
+      // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXX/polygon/mumbai",
+      url: `https://polygon-mumbai.infura.io/v3/${process.env.RINKEBY_INFURA_KEY}`,
+      gasPrice: 40000000000, // 40 gwei
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -298,15 +300,19 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      mainnet: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      mainnet: process.env.EXAMPLE_INFURA_KEY,
+      rinkeby: process.env.EXAMPLE_INFURA_KEY,
+      goerli: process.env.EXAMPLE_INFURA_KEY,
+      polygon: process.env.POLY_KEY, // got from polygonscan.com
+      polygonMumbai: process.env.POLY_KEY,
       // add other network's API key here
     },
   },
   abiExporter: {
     path: "../react-app/src/contracts/ABI",
-    runOnCompile: true,
+    runOnCompile: false,
     clear: true,
-    flat: true,
+    flat: false,
     only: [],
     spacing: 2,
     pretty: false,

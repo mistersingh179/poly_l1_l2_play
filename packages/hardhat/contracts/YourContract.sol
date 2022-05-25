@@ -2,26 +2,29 @@ pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol"; 
-// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "./fx-contracts/tunnel/FxBaseRootTunnel.sol";
 
-contract YourContract {
+contract YourContract is FxBaseRootTunnel {
+    constructor(address _checkpointManager, address _fxRoot) FxBaseRootTunnel(_checkpointManager, _fxRoot) { }
 
-  event SetPurpose(address sender, string purpose);
+    event SetPurpose(address sender, string purpose);
 
-  string public purpose = "Building Unstoppable Apps!!!";
+    string public purpose = "Building Unstoppable Apps!!!!!!";
 
-  constructor() payable {
-    // what should we do on deploy?
-  }
+    // public method which also calls POLYGON to send message to CHILD
+    function setPurpose(string memory newPurpose) public {
+        purpose = newPurpose;
+        console.log(msg.sender,"set purpose to",purpose);
+        emit SetPurpose(msg.sender, purpose);
+        _sendMessageToChild(bytes(newPurpose));
+    }
 
-  function setPurpose(string memory newPurpose) public {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      emit SetPurpose(msg.sender, purpose);
-  }
+    // to support receiving ETH by default
+    receive() external payable {}
+    fallback() external payable {}
 
-  // to support receiving ETH by default
-  receive() external payable {}
-  fallback() external payable {}
+    // internal method which is called by POLYGON to receive message from CHILD
+    function _processMessageFromChild(bytes memory data) internal override {
+        setPurpose(string(data));
+    }
 }
